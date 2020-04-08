@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+		PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+		"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+	<!-- 数据库驱动包的本地路径 -->
+	<classPathEntry location="D:/apache-maven-3.5.4/repository/mysql/mysql-connector-java/8.0.19/mysql-connector-java-8.0.19.jar" />
+
+	<!--配置table表的内容体，targetRuntime指定采用mybatis3版本-->
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+
+		<!--压制注释的生成-->
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+
+		<!-- 配置数据库连接信息 -->
+		 <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+						 connectionURL="jdbc:mysql://localhost:3306/sql-learn"
+						 userId="root"
+						 password="zgxhsql">
+		</jdbcConnection>
+
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<!-- 生成model类的路径 -->
+		<javaModelGenerator targetPackage="com.zgxh.springboot.model" targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+		<!-- 生成mybatis的Mapper.xml文件-->
+		<sqlMapGenerator targetPackage="com.zgxh.springboot.mapper" targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+		<!-- 生成mybatis的Mapper接口类文件-->
+		<javaClientGenerator type="XMLMAPPER" targetPackage="com.zgxh.springboot.mapper" targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+		<!-- 要生成那些表(更改tableName和domainObjectName就可以) -->
+		<table tableName="login-user"
+			   domainObjectName="User"
+			   enableCountByExample="false"
+			   enableUpdateByExample="false"
+			   enableDeleteByExample="false"
+			   enableSelectByExample="false"
+			   selectByExampleQueryId="false"
+		/>
+	</context>
+</generatorConfiguration>

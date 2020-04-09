@@ -1,25 +1,25 @@
 package com.zgxh.springboot.model;
 
 public class User {
-    private Long id; // 主键
+    private Long id;
 
-    private String userCode; // 用户编号
+    private String userCode;
 
-    private String username; // 用户名
+    private String username;
 
-    private String password; // 密码
+    private String password;
 
-    private String email; // 邮箱
+    private String email;
 
-    private String tel; // 电话
+    private String tel;
 
-    private Integer role; // 角色
+    private String role;
 
-    private String avatar; // 头像
+    private String avatar;
 
-    private String lastIp; // 最后一次登录时的ip
+    private String lastIp;
 
-    private String lastTime; // 最后一次登录的时间
+    private String lastTime;
 
     public Long getId() {
         return id;
@@ -69,12 +69,12 @@ public class User {
         this.tel = tel == null ? null : tel.trim();
     }
 
-    public Integer getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Integer role) {
-        this.role = role;
+    public void setRole(String role) {
+        this.role = role == null ? null : role.trim();
     }
 
     public String getAvatar() {

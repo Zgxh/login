@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zgxh.springboot.mapper.UserMapper">
+
   <resultMap id="BaseResultMap" type="com.zgxh.springboot.model.User">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_code" jdbcType="VARCHAR" property="userCode" />
@@ -8,145 +9,28 @@
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="tel" jdbcType="VARCHAR" property="tel" />
-    <result column="role" jdbcType="INTEGER" property="role" />
+    <result column="role" jdbcType="VARCHAR" property="role" />
     <result column="avatar" jdbcType="VARCHAR" property="avatar" />
     <result column="last_ip" jdbcType="VARCHAR" property="lastIp" />
     <result column="last_time" jdbcType="VARCHAR" property="lastTime" />
   </resultMap>
+
   <sql id="Base_Column_List">
     id, user_code, username, password, email, tel, role, avatar, last_ip, last_time
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+
+  <select id="selectByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from login-user
-    where id = #{id,jdbcType=BIGINT}
+    from loginuser
+    where username = #{username}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from login-user
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.zgxh.springboot.model.User">
-    insert into login-user (id, user_code, username, 
-      password, email, tel, 
-      role, avatar, last_ip, 
-      last_time)
-    values (#{id,jdbcType=BIGINT}, #{userCode,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
-      #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, 
-      #{role,jdbcType=INTEGER}, #{avatar,jdbcType=VARCHAR}, #{lastIp,jdbcType=VARCHAR}, 
-      #{lastTime,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.zgxh.springboot.model.User">
-    insert into login-user
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="userCode != null">
-        user_code,
-      </if>
-      <if test="username != null">
-        username,
-      </if>
-      <if test="password != null">
-        password,
-      </if>
-      <if test="email != null">
-        email,
-      </if>
-      <if test="tel != null">
-        tel,
-      </if>
-      <if test="role != null">
-        role,
-      </if>
-      <if test="avatar != null">
-        avatar,
-      </if>
-      <if test="lastIp != null">
-        last_ip,
-      </if>
-      <if test="lastTime != null">
-        last_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="userCode != null">
-        #{userCode,jdbcType=VARCHAR},
-      </if>
-      <if test="username != null">
-        #{username,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="tel != null">
-        #{tel,jdbcType=VARCHAR},
-      </if>
-      <if test="role != null">
-        #{role,jdbcType=INTEGER},
-      </if>
-      <if test="avatar != null">
-        #{avatar,jdbcType=VARCHAR},
-      </if>
-      <if test="lastIp != null">
-        #{lastIp,jdbcType=VARCHAR},
-      </if>
-      <if test="lastTime != null">
-        #{lastTime,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.zgxh.springboot.model.User">
-    update login-user
-    <set>
-      <if test="userCode != null">
-        user_code = #{userCode,jdbcType=VARCHAR},
-      </if>
-      <if test="username != null">
-        username = #{username,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        password = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        email = #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="tel != null">
-        tel = #{tel,jdbcType=VARCHAR},
-      </if>
-      <if test="role != null">
-        role = #{role,jdbcType=INTEGER},
-      </if>
-      <if test="avatar != null">
-        avatar = #{avatar,jdbcType=VARCHAR},
-      </if>
-      <if test="lastIp != null">
-        last_ip = #{lastIp,jdbcType=VARCHAR},
-      </if>
-      <if test="lastTime != null">
-        last_time = #{lastTime,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.zgxh.springboot.model.User">
-    update login-user
-    set user_code = #{userCode,jdbcType=VARCHAR},
-      username = #{username,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      tel = #{tel,jdbcType=VARCHAR},
-      role = #{role,jdbcType=INTEGER},
-      avatar = #{avatar,jdbcType=VARCHAR},
-      last_ip = #{lastIp,jdbcType=VARCHAR},
-      last_time = #{lastTime,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
+  <select id="selectRoleByUsername" parameterType="java.lang.String" resultType="java.lang.String">
+    select
+    role
+    from loginuser
+    where username = #{username}
+  </select>
+
 </mapper>

@@ -1,15 +1,24 @@
 package com.zgxh.springboot.config;
 
 import com.zgxh.springboot.model.User;
+import com.zgxh.springboot.service.impl.DatabaseUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import javax.servlet.FilterChain;
@@ -29,40 +38,67 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
+    @Autowired
+    private UserDetailsService databaseUserDetailsService;
+
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(HttpSecurity http) throws Exception { // 主策略配置
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/static/**").permitAll().anyRequest().authenticated()
+                .antMatchers("/templates/**").permitAll() // 不拦截这些路径
+                .anyRequest().authenticated()
                 .and()
-                .formLogin().loginPage("/login") // 未登录时重定向的页面
-                .permitAll().successHandler(myLoginSuccessHandler()) // 登录成功时的处理器
-                .and()
-                .logout().permitAll().invalidateHttpSession(true).deleteCookies("JSESSIONID")
-                .logoutSuccessHandler()
+                .formLogin() // 使用form表单进行登录
+                .loginPage("/login").permitAll() // 未登录时重定向的URL，不拦截
+                .successHandler(myLoginSuccessHandler()) // 登录成功时的处理器
+                .failureHandler(myLoginFailureHandler())
+                .loginProcessingUrl("/user/login") // 让spring security来处理该路径进行登录验证，是表单提交的URL
+                // .and()
+                // .logout().permitAll().invalidateHttpSession(true).deleteCookies("JSESSIONID")
+                // .logoutSuccessHandler()
+                ;
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(databaseUserDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+    public PasswordEncoder passwordEncoder() { // 密码加密工具
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationSuccessHandler myLoginSuccessHandler() { // 获取登入成功的handler，采用匿名内部类的形式生成
+    public AuthenticationSuccessHandler myLoginSuccessHandler() { // 获取login成功的handler，采用匿名内部类的形式生成
         return new SavedRequestAwareAuthenticationSuccessHandler() {
             @Override
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-                User user = (User) authentication.getPrincipal();
-                logger.info(user.getUsername() + ", Login Success!");
-                super.onAuthenticationSuccess(request, response, authentication);
+            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                                Authentication authentication) throws ServletException, IOException {
+                logger.info( authentication.getName() + ", Login Successfully!");
+                response.sendRedirect("/index/" + authentication.getName());
             }
         };
     }
 
     @Bean
-    public LogoutSuccessHandler myLogoutSuccessHandler() { // 登出成功的Handler
-        return new LogoutSuccessHandler() {
+    public AuthenticationFailureHandler myLoginFailureHandler() { // 获取login失败时的handler
+        return new SimpleUrlAuthenticationFailureHandler() {
             @Override
-            public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
-                try {
-
-                }
+            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+                                                AuthenticationException exception) throws IOException, ServletException {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED); // 401状态码
             }
-        }
+        };
     }
+
+    // @Bean
+    // public LogoutSuccessHandler myLogoutSuccessHandler() { // 登出成功的Handler
+    //     return new LogoutSuccessHandler() {
+    //         @Override
+    //         public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
+    //                                     Authentication authentication) throws IOException, ServletException {
+    //             sec
+    //         }
+    //     }
+    // }
 }

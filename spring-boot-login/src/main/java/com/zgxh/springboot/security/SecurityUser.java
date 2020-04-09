@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * 普通POJO
+ * UserDetails实现类
  *
  * @author Yu Yang
  * @create 2020-04-08 20:57
@@ -29,21 +29,21 @@ public class SecurityUser extends User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() { // 账号是否过期
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() { // 账号是否未被锁
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() { // 密码是否未过期
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() { // 是否已激活
-        return false;
+        return true;
     }
 }

@@ -1,17 +1,12 @@
 package com.zgxh.springboot.mapper;
 
 import com.zgxh.springboot.model.User;
+import org.apache.ibatis.annotations.Mapper;
 
+@Mapper
 public interface UserMapper {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(User record);
+    User selectByUsername(String username);
 
-    int insertSelective(User record);
-
-    User selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(User record);
-
-    int updateByPrimaryKey(User record);
+    String selectRoleByUsername(String username);
 }

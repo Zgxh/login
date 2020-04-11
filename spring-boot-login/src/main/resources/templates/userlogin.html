@@ -1,15 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>user login</title>
+  <meta charset="utf-8">
+  <title>用户登录</title>
+  <link rel="stylesheet" media="screen" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/reset.css"/>
 </head>
 <body>
-<form action="/user/login" method="post">
-    Username:<input type="text" name="username"> <br/>
-    Password:<input type="password" name="password"> <br/>
-    Remember me?<input type="checkbox" name="remember-me"> <br/>
-    <input type="submit" value="Log in">
-</form>
+
+<div id="particles-js">
+		<div class="login">
+			<form action="/user/login" method="post">
+				<div class="login-top">Login</div>
+				<div class="login-center clearfix">
+					<div class="login-center-img"><img src="img/name.png"/></div>
+					<div class="login-center-input">
+						<input type="text" name="username" placeholder="Input your username here" onfocus="this.placeholder=''" onblur="this.placeholder='Input your username here'"/>
+						<div class="login-center-input-text">Username</div>
+					</div>
+				</div>
+				<div class="login-center clearfix">
+					<div class="login-center-img"><img src="img/password.png"/></div>
+					<div class="login-center-input">
+						<input type="password" name="password" placeholder="Input your password here" onfocus="this.placeholder=''" onblur="this.placeholder='Input your password here'"/>
+						<div class="login-center-input-text">Password</div>
+					</div>
+				</div>
+				<div class="login-remember-me">
+					Remember me
+					<input type="checkbox" name="remember-me"> 
+				</div>
+				<div>
+					<input type="submit" value="Login" class="login-submit">
+				</div>
+			</form>
+		</div>
+		<div class="sk-rotating-plane"></div>
+</div>
+
+<!-- scripts -->
+<script src="js/particles.min.js"></script>
+<script src="js/app.js"></script>
+<script type="text/javascript">
+	function hasClass(elem, cls) {
+	  cls = cls || '';
+	  if (cls.replace(/\s/g, '').length == 0) return false; //当cls没有参数时，返回false
+	  return new RegExp(' ' + cls + ' ').test(' ' + elem.className + ' ');
+	}
+	 
+	function addClass(ele, cls) {
+	  if (!hasClass(ele, cls)) {
+	    ele.className = ele.className == '' ? cls : ele.className + ' ' + cls;
+	  }
+	}
+	 
+	function removeClass(ele, cls) {
+	  if (hasClass(ele, cls)) {
+	    var newClass = ' ' + ele.className.replace(/[\t\r\n]/g, '') + ' ';
+	    while (newClass.indexOf(' ' + cls + ' ') >= 0) {
+	      newClass = newClass.replace(' ' + cls + ' ', ' ');
+	    }
+	    ele.className = newClass.replace(/^\s+|\s+$/g, '');
+	  }
+	}
+	// login按钮click后
+		// document.querySelector(".login-button").onclick = function(){
+		// 		addClass(document.querySelector(".login"), "active")
+		// 		setTimeout(function(){
+		// 			addClass(document.querySelector(".sk-rotating-plane"), "active")
+		// 			document.querySelector(".login").style.display = "none"
+		// 		},800)
+		// 		setTimeout(function(){
+		// 			removeClass(document.querySelector(".login"), "active")
+		// 			removeClass(document.querySelector(".sk-rotating-plane"), "active")
+		// 			document.querySelector(".login").style.display = "block"
+		// 			alert("登录成功")
+					
+		// 		},5000)
+		// }
+</script>
 </body>
 </html>

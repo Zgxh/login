@@ -1,7 +1,5 @@
 package com.zgxh.springboot.config;
 
-import com.zgxh.springboot.model.User;
-import com.zgxh.springboot.service.impl.DatabaseUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -19,9 +18,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
-import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +33,7 @@ import java.io.IOException;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class); // 后台控制台打印日志
 
     @Autowired
     private UserDetailsService databaseUserDetailsService;
@@ -45,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception { // 主策略配置
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/templates/**").permitAll() // 不拦截这些路径
+                // .antMatchers("/templates/**").permitAll() // 不拦截这些路径
                 .anyRequest().authenticated()
                 .and()
                 .formLogin() // 使用form表单进行登录
@@ -53,15 +50,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(myLoginSuccessHandler()) // 登录成功时的处理器
                 .failureHandler(myLoginFailureHandler())
                 .loginProcessingUrl("/user/login") // 让spring security来处理该路径进行登录验证，是表单提交的URL
-                // .and()
-                // .logout().permitAll().invalidateHttpSession(true).deleteCookies("JSESSIONID")
-                // .logoutSuccessHandler()
                 ;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(databaseUserDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**"); // 防止spring security对静态资源的拦截
     }
 
     public PasswordEncoder passwordEncoder() { // 密码加密工具
@@ -86,19 +85,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             @Override
             public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                                 AuthenticationException exception) throws IOException, ServletException {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED); // 401状态码
+                logger.info( "Login Failure!");
             }
         };
     }
 
-    // @Bean
-    // public LogoutSuccessHandler myLogoutSuccessHandler() { // 登出成功的Handler
-    //     return new LogoutSuccessHandler() {
-    //         @Override
-    //         public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
-    //                                     Authentication authentication) throws IOException, ServletException {
-    //             sec
-    //         }
-    //     }
-    // }
 }
